@@ -466,12 +466,69 @@ Teljes licenc: [LICENSE](LICENSE) fájl
 
 ## 📈 Roadmap
 
-### v1.1.0 (Tervezett)
-- [ ] Több város egyidejű lekérdezése
-- [ ] Csillagászati adatok (Hold fázisa, bolygók)
-- [ ] Naptarisztikai adatok (napfelkelte, napnyugta)
-- [ ] Riasztás beállítási peristenciálás
-- [ ] Hivatalos Időjáró weboldal
+# Időjáró Bot - Tervezett funkciók v1.2.0
+
+## 🎮 Új játék ötletek
+- **Időjárás kvíz**  
+  Többválasztós kérdések valós idejű adatokkal (pl. „Melyik városban a legmelegebb most?”).  
+  Szerverenkénti pontszám és ranglista a játékosok között.
+
+- **„Igaz vagy hamis” időjárás-állítások**  
+  A bot állítást tesz fel (pl. „Budapesten most esik az eső”), játékosok ✅/❌ reakcióval válaszolnak.  
+  Gyors, interaktív játék reakciók alapján.
+
+- **Időjárás-bingo**  
+  A bot generál bingo-lapot időjárási jelenségekkel (eső, szél, köd, napsütés, stb.).  
+  Valós időjárási adatok alapján lehet „kihúzni” a mezőket.
+
+## 🌌 Csillagászati adatok (bővítés)
+- **Részletesebb hold-információk**  
+  - Következő újhold/telihold időpontja  
+  - Hold magassága kb. este 21:00-kor az adott településen
+
+- **Alap „bolygó-láthatóság” info**  
+  Egyszerű üzenet: „Ma láthatóak: Vénusz, Jupiter (délnyugaton, alkonyatkor)“.  
+  Csak tájékoztató jellegű, nem profi asztrofizika.
+
+## 📅 Naptárisztikai / napi összefoglaló
+- **„Napi időjárás összefoglaló” (`/napi`) parancs**  
+  Reggel lekérhető rövid forecast: min/max hőmérséklet, csapadék esély, szélerősség.
+
+- **„Időjárás tegnap” (`/tegnap`) parancs**  
+  Rövid visszatekintés: előző nap átlag-hőmérséklet, fő időjárási típus.
+
+## ⏰ Riasztás és perzisztencia (fejlesztés)
+- **Több városra külön riasztás profilok**  
+  - Profilok: „otthon“, „munka“, „nyaraló“ stb.  
+  - Külön elnevezés és beállítás mindegyikhez
+
+- **Riasztás-típusok**  
+  - Csak eső esetén jelezzen  
+  - Hőmérséklet küszöb (pl. „30°C fölött“ vagy „0°C alatt“)  
+  - Szélerősség vagy páratartalom alapján
+
+## ✨ Minőség, UX, „polish”
+- **Testreszabható válasznyelv szerver szinten**  
+  Szerver alapértelmezett nyelv + egyéni felülírás lehetősége.
+
+- **„Onboarding” parancs (`/kezdooldal`)**  
+  Lépésről lépésre bemutatja:  
+  1. Nyelv beállítása  
+  2. Riasztások konfigurálása  
+  3. Legjobb játékok kipróbálása
+
+- **„Csendes mód” opció**  
+  Ugyanaz az információ tömör szöveges üzenetben embed nélkül.  
+  `/idő Budapest --csendes` vagy szerver beállítás.
+
+---
+
+**Prioritási sorrend javaslat v1.2.0-ra:**  
+1. Időjárás kvíz (legnépszerűbb lesz)  
+2. Napi összefoglaló + tegnap parancs  
+3. Riasztás profilok  
+4. Onboarding parancs  
+5. Csendes mód
 
 ---
 
@@ -495,6 +552,12 @@ Teljes licenc: [LICENSE](LICENSE) fájl
 - 🌍 80+ magyar város támogatása
 - 🌐 Kétnyelvű felhasználói felület
 
+### v1.1.0 (2025-01-13) ✅
+- [ ] Több város egyidejű lekérdezése
+- [ ] Csillagászati adatok (Hold fázisa, bolygók)
+- [ ] Naptarisztikai adatok (napfelkelte, napnyugta)
+- [ ] Riasztás beállítási peristenciálás
+
 ---
 
 **Készült ❤️ által az Urbanmove 8 Kft. csapatával**
@@ -503,5 +566,5 @@ Teljes licenc: [LICENSE](LICENSE) fájl
 
 ---
 
-*Last updated: 2025-01-12*
-*Version: 1.0.0*
+*Last updated: 2025-01-13*
+*Version: 1.1.0*
