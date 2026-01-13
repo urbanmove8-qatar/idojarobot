@@ -443,10 +443,10 @@ Teljes licenc: [LICENSE](LICENSE) fájl
 
 ### Problémáid vannak?
 
-1. **GitHub Issues**: Nyiss egy issue ezt: https://github.com/urbanmove/idojarobot/issues
-2. **Email**: support@urbanmove.hu
-3. **Discord**: Csatlakozz a Discord szerverekhez
-4. **Documentation**: Olvasd el a [docs/](docs/) mappát
+1. **GitHub Issues**: Nyiss egy issue ezt: https://github.com/urbanmove8-qatar/idojarobot/issues
+2. **Email**: robloxurbanmove8@gmail.com
+3. **Discord**: Csatlakozz a Discord szerverekhez. [Discord szerver link](https://discord.gg/kx242xYW8b)
+4. **Documentation**: Olvasd el a [docs/](docs/) mappát (hamarosan)
 
 ### Válaszidő
 - **Bug jelentés**: 24 óra
@@ -466,23 +466,12 @@ Teljes licenc: [LICENSE](LICENSE) fájl
 
 ## 📈 Roadmap
 
-### v1.1 (Tervezett)
+### v1.1.0 (Tervezett)
 - [ ] Több város egyidejű lekérdezése
 - [ ] Csillagászati adatok (Hold fázisa, bolygók)
 - [ ] Naptarisztikai adatok (napfelkelte, napnyugta)
 - [ ] Riasztás beállítási peristenciálás
-
-### v1.2 (Tervezett)
-- [ ] Saját Discord bot dashboard
-- [ ] Nemzetközi város támogatás
-- [ ] Időjárási grafikon generálás
-- [ ] Múlt béli adatok lekérdezése
-
-### v2.0 (Jövőbeni)
-- [ ] MongoDB integráció
-- [ ] Webes felület
-- [ ] WebHook támogatás
-- [ ] Prémium funkciók
+- [ ] Hivatalos Időjáró weboldal
 
 ---
 
