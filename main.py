@@ -6,6 +6,7 @@ import random
 from typing import Optional
 import math
 from datetime import datetime, timezone
+import unicodedata
 
 # A kód a Discord bot időjárási funkcióit valósítja meg magyar nyelven.
 # Ez a program a OpenWeatherMap API-t használja az időjárási adatok lekérésére,
@@ -683,12 +684,13 @@ async def info_slash_command(interaction: discord.Interaction):
         color=discord.Color.green()
     )
 
-    embed.add_field(name="Verzió", value="1.1.0", inline=True)
+    embed.add_field(name="Verzió", value="1.1.1", inline=True)
     embed.add_field(name="Szerverek", value=str(len(bot.guilds)), inline=True)
     embed.add_field(name="API", value="OpenWeatherMap", inline=True)
     embed.add_field(name="Városok", value=str(len(HUNGARIAN_CITIES)), inline=True)
     embed.add_field(name="Python", value="discord.py", inline=True)
     embed.add_field(name="Nyelv", value="Magyar 🇭🇺", inline=True)
+    embed.add_field(name="Github repó", value="https://github.com/urbanmove8-qatar/idojarobot", inline=True)
 
     embed.set_footer(text="Köszönjük, hogy használod az Időjáró Botot!")
     await interaction.response.send_message(embed=embed)
@@ -1168,6 +1170,14 @@ async def give_up(interaction: discord.Interaction):
     msg = f"😔 A helyes válasz: **{correct_city.capitalize()}** volt!" if lang == 'hu' else f"😔 The correct answer was: **{correct_city.capitalize()}**!"
     await interaction.response.send_message(msg)
 
+def normalize_city_name(name: str) -> str:
+    """Normalize city name: lowercase, remove accents, clean spaces"""
+    name = name.strip().lower()
+    # Remove accents
+    name = ''.join(c for c in unicodedata.normalize('NFD', name) if unicodedata.category(c) != 'Mn')
+    # Clean multiple spaces
+    name = ' '.join(name.split())
+    return name
 
 # --- PREFIX COMMAND: TIPPELJ ---
 
@@ -1177,14 +1187,15 @@ async def tippelj_prefix_command(ctx):
     channel_id = ctx.channel.id
 
     if channel_id in active_games:
-        await ctx.send(f"Egy játék már fut ebben a csatornában! A helyes válasz: **{active_games[channel_id]['city']}**")
+        display_city = active_games[channel_id].get('display_city', active_games[channel_id]['city'].capitalize())
+        await ctx.send(f"🎮 Egy játék már fut ebben a csatornában! A helyes válasz: **{display_city}**")
         return
 
     correct_city = random.choice(HUNGARIAN_CITIES)
     weather_data = get_weather_data(correct_city)
 
     if not weather_data or weather_data.get('cod') != 200:
-        await ctx.send("Sajnálom, hiba történt az időjárási adatok lekérésekor. Próbáld újra később.")
+        await ctx.send("❌ Sajnálom, hiba történt az időjárási adatok lekérésekor. Próbáld újra később.")
         return
 
     weather = weather_data['weather'][0]
@@ -1194,8 +1205,12 @@ async def tippelj_prefix_command(ctx):
     temp_min = main['temp_min']
     temp_max = main['temp_max']
 
+    # JAVÍTOTT: Normalizált név tárolása + eredeti megjelenítés
+    normalized_city = normalize_city_name(correct_city)
+    
     active_games[channel_id] = {
-        'city': correct_city.lower(),
+        'city': normalized_city,  # Ékezet nélküli, kisbetűs verzió
+        'display_city': correct_city,  # Eredeti forma a kiíráshoz
         'difficulty': 'prefix',
         'hints_used': 0,
         'weather_data': weather_data
@@ -1207,10 +1222,10 @@ async def tippelj_prefix_command(ctx):
         color=discord.Color.gold()
     )
 
-    game_embed.add_field(name="Időjárási Állapot", value=f"**{description}**", inline=False)
-    game_embed.add_field(name="Hőmérséklet Tartomány", value=f"**{temp_min:.1f}°C** és **{temp_max:.1f}°C** között", inline=True)
-    game_embed.add_field(name="Páratartalom", value=f"{main['humidity']}%", inline=True)
-    game_embed.set_footer(text="Tippelj egy városnévvel! Pl: Szeged")
+    game_embed.add_field(name="🌤️ Időjárási Állapot", value=f"**{description}**", inline=False)
+    game_embed.add_field(name="🌡️ Hőmérséklet Tartomány", value=f"**{temp_min:.1f}°C** és **{temp_max:.1f}°C** között", inline=True)
+    game_embed.add_field(name="💧 Páratartalom", value=f"{main['humidity']}%", inline=True)
+    game_embed.set_footer(text="💡 Tippelj egy városnévvel! Pl: pecs, szeged, budapest")
 
     await ctx.send(embed=game_embed)
 
@@ -1226,22 +1241,32 @@ async def on_message(message: discord.Message):
         return
 
     channel_id = message.channel.id
-    user_guess = message.content.strip().lower()
+    user_guess_raw = message.content.strip()
+    user_guess_normalized = normalize_city_name(user_guess_raw)
 
-    if channel_id in active_games:
-        correct_answer = active_games[channel_id]['city']
+    if channel_id in active_games and len(user_guess_raw) > 1:
+        game_data = active_games[channel_id]
+        correct_normalized = game_data['city']
+        
+        # JAVÍTOTT: Biztonságos .get() használata
+        display_city = game_data.get('display_city', correct_normalized.capitalize())
 
-        if user_guess == correct_answer:
+        # 🎯 PONTOS TALÁLAT
+        if user_guess_normalized == correct_normalized:
             await message.channel.send(
-                f"🎉 **Gratulálok, {message.author.mention}!** Kitaláltad! A helyes város **{correct_answer.capitalize()}** volt."
+                f"🎉 **Gratulálok, {message.author.mention}!** "
+                f"Kitaláltad! A helyes város **{display_city}** volt! ⛅"
             )
             del active_games[channel_id]
+            return
 
-        elif len(user_guess) > 2 and (user_guess in correct_answer or correct_answer in user_guess):
-            await message.add_reaction("🤔")
+        # 🤔 RÉSZLEGES TALÁLAT (reakció)
+        elif len(user_guess_normalized) > 2:
+            if (user_guess_normalized in correct_normalized or 
+                correct_normalized in user_guess_normalized):
+                await message.add_reaction("🤔")
 
     await bot.process_commands(message)
-
 
 # --- BOT EVENTS ---
 
